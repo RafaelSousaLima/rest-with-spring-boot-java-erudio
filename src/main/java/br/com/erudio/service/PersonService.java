@@ -1,42 +1,57 @@
 package br.com.erudio.service;
 
+import br.com.erudio.dto.PersonDTO;
+import br.com.erudio.exception.ResouceNotFundException;
+import br.com.erudio.mapper.ObjectMapper;
 import br.com.erudio.model.Person;
+import br.com.erudio.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+
+import static br.com.erudio.mapper.ObjectMapper.parseList;
+import static br.com.erudio.mapper.ObjectMapper.parseObject;
 
 @Service
 public class PersonService {
 
-    private final AtomicLong counter = new AtomicLong();
     private Logger logger = LoggerFactory.getLogger(PersonService.class);
 
-    public List<Person> findByAll() {
-        logger.info("Findall Persons");
-        List<Person> persons = new ArrayList<>();
-        for (int i = 0; i <= 5; i++) {
-            persons.add(cretePerson(i));
-        }
-        return persons;
+    @Autowired
+    private PersonRepository personRepository;
+
+    public List<PersonDTO> findByAll() {
+        logger.debug("Finding all persons");
+        return parseList(personRepository.findAll(), PersonDTO.class);
     }
 
-    public Person findById(Long id) {
-        logger.info("Find one Person");
-        return cretePerson(1);
+    public PersonDTO findById(Long id) {
+        logger.info("Finding person by id {}", id);
+        Person person = personRepository.findById(id).orElseThrow(() -> new ResouceNotFundException("No records found for this id"));
+        return parseObject(person,  PersonDTO.class);
     }
 
-
-    private Person cretePerson(int i) {
-        Person person = new Person();
-        person.setId(counter.incrementAndGet());
-        person.setFirstName("First Name" + i);
-        person.setLastName("Last Name");
-        person.setAddress("Rio de Janeiro - RJ");
-        person.setGender("Male");
-        return person;
+    public PersonDTO create(PersonDTO person) {
+        logger.info("Creating person {}", person);
+        return parseObject(personRepository.save(parseObject(person, Person.class)), PersonDTO.class);
     }
+
+    public PersonDTO update(PersonDTO person) {
+        logger.info("Updating person {}", person);
+        Person updatedPerson = personRepository.findById(person.getId()).get();
+        updatedPerson.setFirstName(person.getFirstName());
+        updatedPerson.setLastName(person.getLastName());
+        updatedPerson.setAddress(person.getAddress());
+        updatedPerson.setGender(person.getGender());
+        return parseObject(personRepository.save(updatedPerson), PersonDTO.class);
+    }
+
+    public void delete(Long id) {
+        logger.info("Deleting person {}", id);
+        personRepository.delete(personRepository.findById(id).get());
+    }
+
 }

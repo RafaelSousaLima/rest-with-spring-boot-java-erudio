@@ -26,4 +26,10 @@ public class CustomEntityResponseHandle extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ResouceNotFundException.class)
+    public final ResponseEntity<ExceptionResponse> handleNotFundRequestException(Exception x, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), x.getMessage(), x.getLocalizedMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
 }
