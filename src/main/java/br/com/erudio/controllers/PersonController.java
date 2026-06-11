@@ -1,15 +1,12 @@
 package br.com.erudio.controllers;
 
-import br.com.erudio.model.Person;
+import br.com.erudio.dto.PersonDTO;
 import br.com.erudio.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -19,13 +16,30 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Person findById(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PersonDTO findById(@PathVariable("id") Long id) {
         return personService.findById(id);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Person> findByAll() {
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PersonDTO> findByAll() {
         return personService.findByAll();
     }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PersonDTO save(@RequestBody PersonDTO person) {
+        return personService.create(person);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public PersonDTO update(@RequestBody PersonDTO person) {
+        return personService.update(person);
+    }
+
+    @DeleteMapping(value = "{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        personService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
