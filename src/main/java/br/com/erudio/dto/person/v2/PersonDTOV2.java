@@ -1,10 +1,13 @@
-package br.com.erudio.dto;
+package br.com.erudio.dto.person.v2;
 
-public class PersonDTO {
+import java.util.Date;
+
+public class PersonDTOV2 {
 
     private Long id;
     private String firstName;
     private String lastName;
+    private Date birthDate;
     private String address;
     private String gender;
 
@@ -30,6 +33,14 @@ public class PersonDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getAddress() {

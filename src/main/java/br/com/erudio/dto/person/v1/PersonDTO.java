@@ -1,33 +1,26 @@
-package br.com.erudio.model;
+package br.com.erudio.dto.person.v1;
 
-import jakarta.persistence.*;
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
-@Entity
-@Table(name = "person")
-public class Person implements Serializable {
+public class PersonDTO {
 
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "frist_name", nullable = false, length = 80)
+//    @JsonProperty("frist_name")
     private String fristName;
-
-    @Column(name = "last_name", nullable = false, length = 80)
+//    @JsonProperty("last_name")
     private String lastName;
-
-    @Column(name = "address", nullable = false, length = 100)
+//    @JsonIgnore
     private String address;
 
-    @Column(name = "gender", nullable = false, length = 6)
     private String gender;
 
-    @Column(name = "birth_day")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date birthDay;
 
     public Long getId() {
